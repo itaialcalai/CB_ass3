@@ -1,15 +1,25 @@
+# Itai Alcalai 2060071110
 import random
 import numpy as np
 from sklearn.model_selection import train_test_split
 
-# ISSUE: The algorithm improves very slowly, fitness gets stuck at local minima after 500~ generations
+# A genetic algorithm to select the best neural network architecture to classify 16 bit binary sequences to 0 or 1
+
+# Performance: Avarage accuracy on test set is around 0.9 (10% errors)
+
+# Issue: The algorithm improves very slowly after ~500 generations due to homogeneous population and lack of NN variation. Sometimes converges to local minima.
 # options: 1. change the selection function - roulette wheel selection implemented but not used
 #          2. add backpropagation - the weights are being updated only by the genetic algorithm
 #          3. change hyperparameters - pop_size, generations, threshold, mutation_rate and so on
 #          4. change fitness function
 #          5. change the network architecture
 
-# A genetic algorithm to select the best neural network architecture to classify 16 bit binary sequences to 0 or 1
+# TODO: 1. tend to the issue
+#       2. check nn1.txt results
+#       2. change user file input
+#       3. other assignment requerments
+#       4. write report
+
 
 # class GeneticAlgorithm:
 class GeneticAlgorithm:
@@ -18,18 +28,36 @@ class GeneticAlgorithm:
     def execute(pop_size, generations, threshold, X, y, network):
         # init population
         agents = GeneticAlgorithm.generate_agents(pop_size, network)
+        mute_rate = 0.8  # intial mutation rate
+        interval = generations / 4 # interval to decrease mutation rate
+        last_fitness = None # fitness of the last generation init
+        stuck = 0 # counter for stuck at local minima
         # run genetic algorithm
         for gen in range(generations):
+            # decrease the mutation rate over time
+            if gen % interval == 0:
+                mute_rate /= 2
+            # calculate fitness and select best agents to reproduce
             agents = GeneticAlgorithm.fitness(agents, X, y)
             agents = GeneticAlgorithm.selection(agents)
-            print("Generation ", str(gen), " Best fitness: ", str(agents[0].fitness))
-
+            
+            # check if threshold is met
             if agents[0].fitness <= threshold:
                 print("Threshold met at generation ", str(gen))
                 break
-
+            # check if stuck at local minima
+            if agents[0].fitness == last_fitness:
+                stuck +=1
+                if stuck == 100:
+                    print("Stuck at local minima at generation ", str(gen))
+                    break
+            else:
+                stuck = 0
+            last_fitness = agents[0].fitness
+            print("Generation ", str(gen), " Best fitness: ", str(agents[0].fitness))
+            # crossover and mutation
             agents = GeneticAlgorithm.crossover(agents, pop_size, network)
-            agents = GeneticAlgorithm.mutation(agents)
+            agents = GeneticAlgorithm.mutation(agents, mute_rate)
         # return best network
         return agents[0].network
 
@@ -114,7 +142,7 @@ class GeneticAlgorithm:
 
     # mutation function performs mutation on the agents by rate of 10%
     @staticmethod
-    def mutation(agents):
+    def mutation(agents, mute_rate):
         # print("Mutation")
         for agent in agents:
             if random.uniform(0, 1) <= 0.2:
@@ -195,7 +223,7 @@ def compare(y, y_hat):
     return np.sum(np.abs(y - y_hat))
 
 # split_data function splits the data into training and testing sets based on the test_ratio
-def split_data(X, y, test_ratio=0.3):
+def split_data(X, y, test_ratio=0.2):
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=test_ratio, random_state=42)
     return np.array(X_train), np.array(X_test), np.array(y_train), np.array(y_test)
 
@@ -215,17 +243,21 @@ def main():
         [None, 1, sigmoid]
     ]
     # define the parameters
-    pop_size = 100
+    pop_size = 500
     generations = 1000
     # allow 0.005 error
     threshold = X_train.shape[0] * 0.005
     # execute the genetic algorithm
     best_network = GeneticAlgorithm.execute(pop_size, generations, threshold, X_train, y_train.T, network)
-    print("Best Network: ")
-    print(best_network.weights)
-    # yhat = best_network.forward(X_test)
-    # print("Test Data Results: MSE: ")
-    # print(compare(y_test, yhat))
+    # print(best_network.weights)
+    # run the best network on the test data
+    yhat = best_network.forward(X_test)
+    # reshape y_hat to match y
+    yhat = yhat.reshape(y_test.shape)
+    # calculate fitness as the sum of absolute differences
+    mistakes = np.sum(np.abs(yhat - y_test)) # calculate fitness as the sum of absolute differences
+    print("Best Network Test Data Results:\nMistakes: ", mistakes,"\nAccuracy: ",(1 - round(mistakes / y_test.shape[0], 4)), "\n")
+    
 
 
 if __name__ == "__main__":
