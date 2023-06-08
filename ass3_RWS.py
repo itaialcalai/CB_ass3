@@ -5,11 +5,11 @@ from sklearn.model_selection import train_test_split
 
 # A genetic algorithm to select the best neural network architecture to classify 16 bit binary sequences to 0 or 1
 
-# Performance: Avarage accuracy on test set is 0.9 (10% errors)
+# Performance: Avarage accuracy on test set is over 0.9 (10% errors)
 
-# Issue: The algorithm improves very slowly after ~500 generations due to homogeneous population and lack of NN variation.
-# options: 1. change the selection function - roulette wheel selection implemented but not used
-#          2. add backpropagation - the weights are being updated only by the genetic algorithm
+# Issue: The algorithm improves very slowly after ~500 generations due to homogeneous population and lack of NN variation. Sometimes converges to local minima.
+# options: 1. 
+#          2. add backpropagation - the weights are being updated only by the genetic algorithm -> maybe not allowed ?
 #          3. change hyperparameters - pop_size, generations, threshold, mutation_rate and so on
 #          4. change fitness function
 #          5. change the network architecture
