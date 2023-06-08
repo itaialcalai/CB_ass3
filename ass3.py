@@ -2,7 +2,7 @@ import random
 import numpy as np
 from sklearn.model_selection import train_test_split
 
-# ISSUE: The algorithm improves very slowly, fitness gets stuck at local minima
+# ISSUE: The algorithm improves very slowly, fitness gets stuck at local minima after 500~ generations
 # options: 1. change the selection function - roulette wheel selection implemented but not used
 #          2. add backpropagation - the weights are being updated only by the genetic algorithm
 #          3. change hyperparameters - pop_size, generations, threshold, mutation_rate and so on
