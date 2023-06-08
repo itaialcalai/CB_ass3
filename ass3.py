@@ -17,7 +17,7 @@ from sklearn.model_selection import train_test_split
 # TODO: 1. tend to the issue
 #       2. check nn1.txt results
 #       2. change user file input
-#       3. other assignment requerments
+#       3. other assignment requerments - runnet0 wnet0 all that..
 #       4. write report
 
 
