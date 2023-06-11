@@ -58,7 +58,7 @@ def read_samples_file(samples_file):
         raw_samples = input_file.readlines()
 
     samples = []
-    for raw_sample in raw_samples:
+    for raw_sample in set(raw_samples):
         data, classification = raw_sample.strip().split()
         samples.append(
             SampleClassification(

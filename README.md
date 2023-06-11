@@ -21,3 +21,6 @@ Evaluating the NN.
 python runnet0.py -h
 python runnet0.py samples0.txt // -> results.txt
 ```
+
+## Remarks ##
+* Currently, NN architecture is constant per execution and not calculated asa part of the GA.
