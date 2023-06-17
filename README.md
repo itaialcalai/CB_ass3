@@ -1,4 +1,5 @@
 # CB_ass3 #
+Recognize patterns in binary strings using neural networks and a GA for training the model.
 
 
 ## Installation ##
@@ -23,4 +24,4 @@ python runnet0.py samples0.txt // -> results.txt
 ```
 
 ## Remarks ##
-* Currently, NN architecture is constant per execution and not calculated asa part of the GA.
+* Currently, NN architecture is constant per execution and not calculated as part of the GA.
