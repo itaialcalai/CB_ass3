@@ -14,13 +14,13 @@ python -m pip install numpy
 Building the NN using GA.
 ```commandline
 python buildnet0.py -h
-python buildnet0.py nn0.txt  // -> wnet.json
+python buildnet0.py nn0.txt  // -> wnet0.json
 ```
 
 Evaluating the NN.
 ```commandline
 python runnet0.py -h
-python runnet0.py samples0.txt // -> results.txt
+python runnet0.py wnet0.json samples0.txt // -> results.txt
 ```
 
 ## Remarks ##

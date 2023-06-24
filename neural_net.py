@@ -20,7 +20,7 @@ class GeneticNeuralNet:
         self._net = neural_net_data
         self._activation = activation
 
-    def train(self, samples, population_size=500, generations_count=1000):
+    def train(self, samples, population_size=300, generations_count=1000):
         """
         Train the net using GA on a given set of samples
         :param samples: samples to train on
@@ -32,7 +32,7 @@ class GeneticNeuralNet:
         :return: success rate of the training process
         :rtype: float
         """
-        test_samples, train_samples = train_test_split(samples, test_ratio=0.99)     # TODO: smaller ratio
+        test_samples, train_samples = train_test_split(samples, test_ratio=0.2)     # TODO: smaller ratio
         population = [self.random_copy() for _ in range(population_size)]
         best_model = genetic_train_nn(train_samples, population, generations_count)
         self._net = best_model._net
@@ -72,7 +72,7 @@ class GeneticNeuralNet:
             layer_output = input_data
             for layer in self._net.layers:
                 layer_output = layer_output @ layer.weights
-                layer_output = self._activation(layer_output)
+                layer_output = self._activation(layer_output - 1)
 
             # The last layer must contain a single value
             results.append(layer_output[0])

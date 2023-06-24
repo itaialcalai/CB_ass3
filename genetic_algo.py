@@ -17,7 +17,7 @@ def genetic_train_nn(
         selection_rate=0.1,
         mutation_rate=0.4,
         crossover_rate=0.4,
-        fitness_threshold=0.01,
+        fitness_threshold=0.02,
         stuck_limit=50
 ):
     """

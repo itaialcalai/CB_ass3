@@ -95,6 +95,6 @@ def write_results_file(results, results_file):
     """
     with open(results_file, "w") as output_file:
         output_file.writelines([
-            "".join(map(str, result.data)) + f" {result.classification}\n"
+            f"{result.classification}\n"
             for result in results
         ])

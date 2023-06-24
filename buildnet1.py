@@ -23,8 +23,8 @@ def main():
         formatter_class=argparse.ArgumentDefaultsHelpFormatter
     )
 
-    parser.add_argument('samples_file', help='Input samples file to train & test on', default="nn.txt")
-    parser.add_argument('--wnet_file', help='Serialized generated NN model file to write to', default="wnet.json")
+    parser.add_argument('samples_file', help='Input samples file to train & test on', default="nn1.txt")
+    parser.add_argument('--wnet_file', help='Serialized generated NN model file to write to', default="wnet1.json")
 
     args = parser.parse_args()
     build_net(args.samples_file, args.wnet_file)
