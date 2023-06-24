@@ -42,18 +42,18 @@ def genetic_train_nn(
     :rtype: neural_net.GeneticNeuralNet
     """
     inputs, classifications = zip(*samples)
-    population = [_Agent(0, nn) for nn in population]
     last_fitness, stuck_state = None, 0
-    best_agent = population[0]
+    best_agent = None
 
     for generation in range(generations_count):
         # TODO: performance issues
-        population = sorted(
-            _Agent(agent.neural_net.fitness(inputs, classifications), agent.neural_net)
-            for agent in population
+        population_agents = sorted(
+            _Agent(neural_net.fitness(inputs, classifications), neural_net)
+            for neural_net in population
         )
-        best_agent = population[0]
+        best_agent = population_agents[0]
         stuck_state = (0 if last_fitness != best_agent.fitness else stuck_state+1)
+        last_fitness = best_agent.fitness
         print(f"#{generation} best fitness {best_agent.fitness}")
 
         if best_agent.fitness <= fitness_threshold:
@@ -65,36 +65,41 @@ def genetic_train_nn(
             return best_agent.neural_net
 
         # TODO: change rates over time? decrease mutations?
-        population = _generate_next_generation(population, selection_rate, mutation_rate, crossover_rate)
+        population = _generate_next_generation(population_agents, selection_rate, mutation_rate, crossover_rate)
 
     return best_agent.neural_net
 
 
-def _generate_next_generation(population, selection_rate, mutation_rate, crossover_rate):
-    selection_count = int(selection_rate * len(population))
-    mutation_count = int(mutation_rate * len(population))
-    crossover_count = int(crossover_rate * len(population))
-    randomize_count = len(population) - selection_count - mutation_count - crossover_count
+def _generate_next_generation(population_agents, selection_rate, mutation_rate, crossover_rate):
+    selection_count = int(selection_rate * len(population_agents))
+    mutation_count = int(mutation_rate * len(population_agents))
+    crossover_count = int(crossover_rate * len(population_agents))
+    randomize_count = len(population_agents) - selection_count - mutation_count - crossover_count
 
-    selection_population = population[:selection_count]
-    mutation_population = _generate_mutations(population, mutation_count)
-    crossover_population = _generate_crossovers(population, crossover_count)
+    selection_population = [agent.neural_net for agent in population_agents[:selection_count]]
+    mutation_population = _generate_mutations(population_agents, mutation_count)
+    crossover_population = _generate_crossovers(population_agents, crossover_count)
     randomized_population = [
-        _Agent(0, population[0].neural_net.random_copy())
+        population_agents[0].neural_net.random_copy()
         for _ in range(randomize_count)
     ]
 
     return selection_population + mutation_population + crossover_population + randomized_population
 
 
-def _generate_mutations(population, mutation_count):
+def _generate_mutations(population_agents, mutation_count):
+    first = population_agents[0].neural_net
+    second = population_agents[1].neural_net
+    mutation = first.copy()
+    mutation.neural_net_data.layers[0].weights += second.neural_net_data.layers[0].weights
     # TODO: impl
-    return population[:mutation_count]
+    return [agent.neural_net for agent in population_agents[:mutation_count]]
 
 
-def _generate_crossovers(population, crossover_count):
+def _generate_crossovers(population_agents, crossover_count):
     # TODO: impl
-    return population[:crossover_count]
+    return [agent.neural_net for agent in population_agents[:crossover_count]]
+
 
 """
     # roulette wheel selection method

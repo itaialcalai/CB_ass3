@@ -17,21 +17,9 @@ class NeuralNetLayerData:
         :param weights: layer weights
         :type weights: numpy.ndarray
         """
-        self._input_size = input_size
-        self._output_size = output_size
-        self._weights = np.random.randn(input_size, output_size) if weights is None else weights
-
-    @property
-    def input_size(self):
-        return self._input_size
-
-    @property
-    def output_size(self):
-        return self._output_size
-
-    @property
-    def weights(self):
-        return self._weights
+        self.input_size = input_size
+        self.output_size = output_size
+        self.weights = np.random.randn(input_size, output_size) if weights is None else weights
 
 
 class NeuralNetData:
@@ -49,6 +37,12 @@ class NeuralNetData:
     def random_copy(self):
         return NeuralNetData([
             NeuralNetLayerData(layer.input_size, layer.output_size)
+            for layer in self._layers
+        ])
+
+    def copy(self):
+        return NeuralNetData([
+            NeuralNetLayerData(layer.input_size, layer.output_size, np.array(layer.weights))
             for layer in self._layers
         ])
 
