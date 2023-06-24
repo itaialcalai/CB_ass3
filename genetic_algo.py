@@ -87,18 +87,44 @@ def _generate_next_generation(population_agents, selection_rate, mutation_rate, 
     return selection_population + mutation_population + crossover_population + randomized_population
 
 
-def _generate_mutations(population_agents, mutation_count):
-    first = population_agents[0].neural_net
-    second = population_agents[1].neural_net
-    mutation = first.copy()
-    mutation.neural_net_data.layers[0].weights += second.neural_net_data.layers[0].weights
-    # TODO: impl
-    return [agent.neural_net for agent in population_agents[:mutation_count]]
+def mutate(neural_net, mutation_rate):
+    mute_net = neural_net.copy()
+    for layer in mute_net.neural_net_data.layers:
+        if np.random.rand() < mutation_rate:
+            layer.weights += np.random.normal(0, 0.1, layer.weights.shape)
+    return mute_net
 
+def _generate_mutations(population_agents, mutation_count):
+    mutated_pop = []
+    for agent in population_agents[:mutation_count]:
+        mutated_net = mutate(agent.neural_net, mutation_count)
+        mutated_pop.append(mutated_net)
+    return mutated_pop
+
+    # mutation.neural_net_data.layers[0].weights += second.neural_net_data.layers[0].weights
+    # # TODO: check
+    # return [agent.neural_net for agent in population_agents[:mutation_count]]
+
+def crossover(first, second):
+    cross_net = first.copy()
+    for layer in cross_net.neural_net_data.layers:
+        if np.random.rand() < 0.5:
+            layer.weights = second.neural_net_data.layers[0].weights
+    return cross_net
 
 def _generate_crossovers(population_agents, crossover_count):
-    # TODO: impl
-    return [agent.neural_net for agent in population_agents[:crossover_count]]
+    crossover_pop = []
+    for i in range(crossover_count):
+        # select random agents
+        first = random.choice(population_agents)
+        second = random.choice(population_agents)
+        # crossover
+        cross_net = crossover(first.neural_net, second.neural_net)
+        crossover_pop.append(cross_net)
+    return crossover_pop
+
+    # # TODO: check
+    # return [agent.neural_net for agent in population_agents[:crossover_count]]
 
 
 """
