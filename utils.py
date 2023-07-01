@@ -85,16 +85,19 @@ def read_data_file(data_file):
         ]
 
 
-def write_results_file(results, results_file):
+def write_results_file(results, results_file, show_data=False):
     """
     Write evaluated results into an output file.
     :param results: results to write
     :type results: list[utils.SampleClassification]
     :param results_file: results file path to write to
     :type results_file: str
+    :param show_data: whether to show sample source data in results file lines.
+    :type show_data: bool
     """
     with open(results_file, "w") as output_file:
         output_file.writelines([
+            (f"{''.join(map(str, result.data))} " if show_data else "") +
             f"{result.classification}\n"
             for result in results
         ])

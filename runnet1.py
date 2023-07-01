@@ -19,7 +19,7 @@ def main():
         description="Executing serialized NN architecture on a given input data.",
         formatter_class=argparse.ArgumentDefaultsHelpFormatter
     )
-    parser.add_argument('wnet_file', help='Serialized NN model file to evaluate on input data', default="wnet1.json")
+    parser.add_argument('wnet_file', help='Serialized NN model file to evaluate on input data', default="wnet1.txt")
     parser.add_argument('data_file', help='Input data file to evaluate model on', default="samples.txt")
     parser.add_argument('--results_file', help='Output file to write final classifications', default="result.txt")
 
