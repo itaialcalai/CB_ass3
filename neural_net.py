@@ -20,11 +20,13 @@ class GeneticNeuralNet:
         self._net = neural_net_data
         self._activation = activation
 
-    def train(self, samples, population_size=50, generations_count=1000):
+    def train(self, train_samples, test_samples, population_size=50, generations_count=1000):
         """
         Train the net using GA on a given set of samples
-        :param samples: samples to train on
-        :type samples: list[utils.SampleClassification]
+        :param train_samples: train samples to train on
+        :type train_samples: list[utils.SampleClassification]
+        :param test_samples: samples to test on
+        :type test_samples: list[utils.SampleClassification]
         :param population_size: size of population in the GA
         :type population_size: int
         :param generations_count: number of generations to execute in the GA
@@ -32,7 +34,6 @@ class GeneticNeuralNet:
         :return: success rate of the training process
         :rtype: float
         """
-        test_samples, train_samples = train_test_split(samples, test_ratio=0.99)     # TODO: smaller ratio
         population = [self.random_copy() for _ in range(population_size)]
         best_model = genetic_train_nn(train_samples, population, generations_count)
         self._net = best_model._net
@@ -69,13 +70,14 @@ class GeneticNeuralNet:
     def _feed_forward(self, inputs):
         results = []
         for input_data in inputs:
-            layer_output = input_data
+            layer_output = np.append(input_data, 1)
             for layer in self._net.layers:
                 layer_output = layer_output @ layer.weights
-                layer_output = self._activation(layer_output - 1)
+                layer_output = self._activation(layer_output)
 
             # The last layer must contain a single value
             results.append(layer_output[0])
+            # print(input_data, layer_output[0], sum(input_data))
 
         return np.array(results)
 
